@@ -60,7 +60,7 @@
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
-          <button type="submit">Register Now</button>
+          <button :disabled="loading" type="submit">Register Now</button>
         </form>
       </ValidationObserver>
       <div>
@@ -70,12 +70,6 @@
         </p>
       </div>
     </div>
-    <!-- Toast -->
-    <toast-message
-      v-if="showToast"
-      :status="status"
-      :message="message"
-    ></toast-message>
   </div>
 </template>
 
@@ -96,12 +90,15 @@ export default {
       age: "",
       password: "",
       confirmPassword: "",
+
+      loading: false,
     };
   },
   methods: {
     ...mapActions("auth", ["register"]),
     ...mapMutations("notification", ["triggerToast"]),
     onSubmit: async function () {
+      this.loading = true;
       const formData = {
         name: this.name,
         email: this.email,
@@ -114,12 +111,14 @@ export default {
           status: "success",
           message: "Register successfully.",
         });
+        this.loading = false;
         this.$router.push({ path: "/" });
       } else {
         this.triggerToast({
           status: "danger",
           message: "Email is already exist.",
         });
+        this.loading = false;
       }
     },
   },
@@ -174,6 +173,13 @@ button {
   color: #fff;
   cursor: pointer;
 }
+
+button:disabled {
+  cursor: default;
+  background-color: #1a936f75;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 a {
   color: #1a936f;
   font-weight: bold;

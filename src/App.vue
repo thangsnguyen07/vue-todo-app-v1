@@ -1,12 +1,6 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link>
-      <div v-if="!user">
-        <router-link to="/login">Login</router-link>
-        <router-link to="/register">Register</router-link>
-      </div>
-    </nav>
+    <nav-bar></nav-bar>
     <router-view />
     <!-- Toast -->
     <toast-message
@@ -19,12 +13,13 @@
 <script>
 import { mapState } from "vuex";
 import ToastMessage from "./components/ToastMessage.vue";
+import NavBar from "./components/NavBar.vue";
 export default {
   components: {
     "toast-message": ToastMessage,
+    "nav-bar": NavBar,
   },
   computed: {
-    ...mapState("auth", ["user"]),
     ...mapState("notification", ["showToast", "status", "message"]),
   },
 };

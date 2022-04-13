@@ -28,7 +28,7 @@
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
-          <button type="submit">Login</button>
+          <button :disabled="loading" type="submit">Login</button>
         </form>
       </ValidationObserver>
       <div>
@@ -54,12 +54,15 @@ export default {
     return {
       email: "",
       password: "",
+
+      loading: false,
     };
   },
   methods: {
     ...mapActions("auth", ["login"]),
     ...mapMutations("notification", ["triggerToast"]),
     onSubmit: async function () {
+      this.loading = true;
       const loginForm = {
         email: this.email,
         password: this.password,
@@ -70,12 +73,14 @@ export default {
           status: "success",
           message: "Login successfully.",
         });
+        this.loading = false;
         this.$router.push({ path: "/" });
       } else {
         this.triggerToast({
           status: "danger",
           message: "Email or password is not correct.",
         });
+        this.loading = false;
       }
     },
   },
@@ -130,6 +135,13 @@ button {
   color: #fff;
   cursor: pointer;
 }
+
+button:disabled {
+  cursor: default;
+  background-color: #1a936f75;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 a {
   color: #1a936f;
   font-weight: bold;

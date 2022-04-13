@@ -30,10 +30,23 @@ const actions = {
       const response = await axiosClient.post("/user/login", loginData);
       commit("setAuth", response.data);
       localStorage.setItem("vue-todo-app", JSON.stringify(response.data));
-      console.log(response);
       return true;
     } catch (err) {
       return false;
+    }
+  },
+
+  async logout({ commit }) {
+    try {
+      const response = await axiosClient.post("/user/logout");
+      if (response.data.success) {
+        commit("setAuth", { auth: null });
+        localStorage.removeItem("vue-todo-app");
+      }
+
+      return response.data;
+    } catch (err) {
+      return err.response.data;
     }
   },
 };
