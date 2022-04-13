@@ -42,7 +42,7 @@
             <input
               v-model="password"
               placeholder="Create password"
-              type="text"
+              type="password"
             />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
@@ -55,7 +55,7 @@
             <input
               v-model="confirmPassword"
               placeholder="Confirm password"
-              type="text"
+              type="password"
             />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
@@ -81,15 +81,13 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from "vee-validate";
-import ToastMessage from "../components/ToastMessage.vue";
 
-import { mapActions, mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    "toast-message": ToastMessage,
   },
   data() {
     return {
@@ -99,10 +97,6 @@ export default {
       password: "",
       confirmPassword: "",
     };
-  },
-  computed: {
-    ...mapState("auth", ["user", "token"]),
-    ...mapState("notification", ["showToast", "status", "message"]),
   },
   methods: {
     ...mapActions("auth", ["register"]),
@@ -120,17 +114,13 @@ export default {
           status: "success",
           message: "Register successfully.",
         });
+        this.$router.push({ path: "/" });
       } else {
         this.triggerToast({
           status: "danger",
           message: "Email is already exist.",
         });
       }
-    },
-    gotoLogin: () => {
-      this.$router.push({
-        path: `/login`,
-      });
     },
   },
 };

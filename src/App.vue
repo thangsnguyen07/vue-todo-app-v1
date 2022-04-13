@@ -2,14 +2,33 @@
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link>
-      <div>
+      <div v-if="!user">
         <router-link to="/login">Login</router-link>
         <router-link to="/register">Register</router-link>
       </div>
     </nav>
     <router-view />
+    <!-- Toast -->
+    <toast-message
+      v-if="showToast"
+      :status="status"
+      :message="message"
+    ></toast-message>
   </div>
 </template>
+<script>
+import { mapState } from "vuex";
+import ToastMessage from "./components/ToastMessage.vue";
+export default {
+  components: {
+    "toast-message": ToastMessage,
+  },
+  computed: {
+    ...mapState("auth", ["user"]),
+    ...mapState("notification", ["showToast", "status", "message"]),
+  },
+};
+</script>
 
 <style>
 * {
