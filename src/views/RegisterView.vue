@@ -15,15 +15,11 @@
           </ValidationProvider>
 
           <ValidationProvider
-            rules="required"
+            rules="required|email"
             v-slot="{ errors }"
             class="inputGroup"
           >
-            <input
-              v-model="email"
-              placeholder="Enter your email"
-              type="email"
-            />
+            <input v-model="email" placeholder="Enter your email" type="text" />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
@@ -69,23 +65,31 @@
       </ValidationObserver>
       <div>
         <p class="text-white">
-          Already have an account? <a href="/login">Login</a>
+          Already have an account?
+          <router-link :to="'/login'">Login</router-link>
         </p>
       </div>
     </div>
+    <!-- Toast -->
+    <toast-message
+      v-if="showToast"
+      :status="status"
+      :message="message"
+    ></toast-message>
   </div>
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
-import { required, confirmed } from "vee-validate/dist/rules";
+import { ValidationProvider, ValidationObserver } from "vee-validate";
+import ToastMessage from "../components/ToastMessage.vue";
 
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 export default {
   components: {
     ValidationProvider,
     ValidationObserver,
+    "toast-message": ToastMessage,
   },
   data() {
     return {
@@ -96,60 +100,40 @@ export default {
       confirmPassword: "",
     };
   },
-  computed: { ...mapState("auth", ["user", "token"]) },
+  computed: {
+    ...mapState("auth", ["user", "token"]),
+    ...mapState("notification", ["showToast", "status", "message"]),
+  },
   methods: {
     ...mapActions("auth", ["register"]),
-    onSubmit: function () {
+    ...mapMutations("notification", ["triggerToast"]),
+    onSubmit: async function () {
       const formData = {
         name: this.name,
         email: this.email,
         age: this.age,
         password: this.password,
       };
-      this.register(formData);
+      const isSuccess = await this.register(formData);
+      if (isSuccess) {
+        this.triggerToast({
+          status: "success",
+          message: "Register successfully.",
+        });
+      } else {
+        this.triggerToast({
+          status: "danger",
+          message: "Email is already exist.",
+        });
+      }
+    },
+    gotoLogin: () => {
+      this.$router.push({
+        path: `/login`,
+      });
     },
   },
 };
-
-// Validation
-extend("required", {
-  ...required,
-  message: "This field is required",
-});
-
-extend("min", {
-  validate(value, { length }) {
-    if (value.length >= length) return true;
-    return `Min length is ${length} characters`;
-  },
-  params: ["length"],
-});
-
-extend("max", {
-  validate(value, { length }) {
-    if (value.length <= length) return true;
-    return `Max length is ${length} characters`;
-  },
-  params: ["length"],
-});
-
-extend("numberic", (value) => {
-  if (!isNaN(value)) return true;
-  return "Age is not valid";
-});
-
-extend("min-value", {
-  validate(value, { min }) {
-    if (!isNaN(value) && Number(value) >= Number(min)) return true;
-    return `Min age is ${min}`;
-  },
-  params: ["min"],
-});
-
-extend("confirmed", {
-  ...confirmed,
-  message: "Password does not match",
-});
 </script>
 
 <style scoped>

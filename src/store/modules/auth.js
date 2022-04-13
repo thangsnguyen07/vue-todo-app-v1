@@ -17,10 +17,14 @@ const mutations = {
 
 const actions = {
   async register({ commit }, registerData) {
-    const response = await axiosClient.post("/user/register", registerData);
-    commit("setAuth", response.data);
-
-    localStorage.setItem("vue-todo-app", JSON.stringify(response.data));
+    try {
+      const response = await axiosClient.post("/user/register", registerData);
+      commit("setAuth", response.data);
+      localStorage.setItem("vue-todo-app", JSON.stringify(response.data));
+      return true;
+    } catch (err) {
+      return false;
+    }
   },
 };
 
