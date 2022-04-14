@@ -6,6 +6,8 @@ import store from "./store";
 import "./validators";
 
 Vue.config.productionTip = false;
+// Load user
+store.dispatch("auth/getUser");
 
 new Vue({
   router,

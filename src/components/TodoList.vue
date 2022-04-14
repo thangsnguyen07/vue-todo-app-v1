@@ -1,5 +1,5 @@
 <template>
-  <div>This is todo list</div>
+  <div><h1 style="color: white">This is todo list</h1></div>
 </template>
 
 <script>

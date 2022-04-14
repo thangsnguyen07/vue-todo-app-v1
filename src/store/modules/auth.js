@@ -1,5 +1,6 @@
 /* eslint-disable */
 import axiosClient from "@/api/axiosClient";
+import getUserFromLocal from "@/utils/getUserFromLocal";
 
 const state = {
   user: null,
@@ -40,7 +41,7 @@ const actions = {
     try {
       const response = await axiosClient.post("/user/logout");
       if (response.data.success) {
-        commit("setAuth", { auth: null });
+        commit("setAuth", { user: null });
         localStorage.removeItem("vue-todo-app");
       }
 
@@ -48,6 +49,11 @@ const actions = {
     } catch (err) {
       return err.response.data;
     }
+  },
+
+  async getUser({ commit }) {
+    const user = getUserFromLocal();
+    commit("setAuth", { user: user });
   },
 };
 

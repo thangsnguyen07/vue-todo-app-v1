@@ -1,4 +1,5 @@
 /* eslint-disable */
+import getToken from "@/utils/getToken";
 import axios from "axios";
 
 const axiosClient = axios.create({
@@ -20,13 +21,5 @@ axiosClient.interceptors.request.use(
     return Promise.reject(err);
   }
 );
-
-function getToken() {
-  if (localStorage["vue-todo-app"]) {
-    return JSON.parse(localStorage.getItem("vue-todo-app")).token;
-  } else {
-    return null;
-  }
-}
 
 export default axiosClient;
