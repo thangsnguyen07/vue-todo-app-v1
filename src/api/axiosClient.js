@@ -3,7 +3,7 @@ import getToken from "@/utils/getToken";
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://api-nodejs-todolist.herokuapp.com",
+  baseURL: process.env.VUE_APP_BASE_API_URL,
   headers: {
     "Content-Type": "application/json",
   },

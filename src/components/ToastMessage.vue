@@ -1,10 +1,15 @@
 <template>
-  <div id="snackbar" :class="status" class="show">{{ message }}</div>
+  <div id="snackbar" :class="status" class="show">
+    {{ message }}
+  </div>
 </template>
 <script>
 export default {
   name: "ToastMessage",
-  props: ["status", "message"],
+  props: {
+    message: String,
+    status: String,
+  },
 };
 </script>
 <style scoped>
@@ -23,6 +28,7 @@ export default {
   z-index: 1;
   left: 50%;
   bottom: 30px;
+  font-weight: 600;
 }
 
 #snackbar.success {

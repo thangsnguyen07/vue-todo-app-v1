@@ -10,7 +10,12 @@
             v-slot="{ errors }"
             class="inputGroup"
           >
-            <input v-model="name" placeholder="Enter your name" type="text" />
+            <input
+              v-model="name"
+              :disabled="loading"
+              placeholder="Enter your name"
+              type="text"
+            />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
@@ -19,17 +24,27 @@
             v-slot="{ errors }"
             class="inputGroup"
           >
-            <input v-model="email" placeholder="Enter your email" type="text" />
+            <input
+              v-model="email"
+              :disabled="loading"
+              placeholder="Enter your email"
+              type="text"
+            />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
           <ValidationProvider
-            rules="required|numberic|min-value:8"
+            rules="required|numeric|min_value:8"
             v-slot="{ errors }"
             class="inputGroup"
             name="age"
           >
-            <input v-model="age" placeholder="Enter your age" type="text" />
+            <input
+              v-model="age"
+              :disabled="loading"
+              placeholder="Enter your age"
+              type="text"
+            />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
@@ -41,6 +56,7 @@
           >
             <input
               v-model="password"
+              :disabled="loading"
               placeholder="Create password"
               type="password"
             />
@@ -54,6 +70,7 @@
           >
             <input
               v-model="confirmPassword"
+              :disabled="loading"
               placeholder="Confirm password"
               type="password"
             />
@@ -76,7 +93,7 @@
 <script>
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
@@ -90,36 +107,21 @@ export default {
       age: "",
       password: "",
       confirmPassword: "",
-
-      loading: false,
     };
   },
+  computed: {
+    ...mapState("account/register", ["loading"]),
+  },
   methods: {
-    ...mapActions("auth", ["register"]),
-    ...mapMutations("notification", ["triggerToast"]),
-    onSubmit: async function () {
-      this.loading = true;
+    ...mapActions("account/register", ["register"]),
+    onSubmit: function () {
       const formData = {
         name: this.name,
         email: this.email,
         age: this.age,
         password: this.password,
       };
-      const isSuccess = await this.register(formData);
-      if (isSuccess) {
-        this.triggerToast({
-          status: "success",
-          message: "Register successfully.",
-        });
-        this.loading = false;
-        this.$router.push({ path: "/" });
-      } else {
-        this.triggerToast({
-          status: "danger",
-          message: "Email is already exist.",
-        });
-        this.loading = false;
-      }
+      this.register(formData);
     },
   },
 };

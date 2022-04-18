@@ -1,6 +1,14 @@
 import { extend } from "vee-validate";
 
-import { required, confirmed, email } from "vee-validate/dist/rules";
+import {
+  required,
+  confirmed,
+  email,
+  min,
+  max,
+  numeric,
+  min_value,
+} from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
@@ -13,32 +21,23 @@ extend("email", {
 });
 
 extend("min", {
-  validate(value, { length }) {
-    if (value.length >= length) return true;
-    return `Min length is ${length} characters`;
-  },
-  params: ["length"],
+  ...min,
+  message: (_, { length }) => `Min length is ${length} characters`,
 });
 
 extend("max", {
-  validate(value, { length }) {
-    if (value.length <= length) return true;
-    return `Max length is ${length} characters`;
-  },
-  params: ["length"],
+  ...max,
+  message: (_, { length }) => `Max length is ${length} characters`,
 });
 
-extend("numberic", (value) => {
-  if (!isNaN(value)) return true;
-  return "Age is not valid";
+extend("numeric", {
+  ...numeric,
+  message: "Age must is a number",
 });
 
-extend("min-value", {
-  validate(value, { min }) {
-    if (!isNaN(value) && Number(value) >= Number(min)) return true;
-    return `Min age is ${min}`;
-  },
-  params: ["min"],
+extend("min_value", {
+  ...min_value,
+  message: (_, { min }) => `Min age is ${min}`,
 });
 
 extend("confirmed", {

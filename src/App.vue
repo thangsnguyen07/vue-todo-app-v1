@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav-bar></nav-bar>
-    <router-view />
+    <router-view></router-view>
     <!-- Toast -->
     <toast-message
       v-if="showToast"
@@ -43,29 +43,6 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-nav {
-  padding: 20px 40px;
-  background-color: rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-nav a {
-  font-weight: bold;
-  color: #eee;
-  text-decoration: none;
-  margin-right: 12px;
-}
-
-nav a:last-child {
-  margin-right: 0;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
 }
 
 input {

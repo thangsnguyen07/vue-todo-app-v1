@@ -10,7 +10,12 @@
             v-slot="{ errors }"
             class="inputGroup"
           >
-            <input v-model="email" placeholder="Enter your email" type="text" />
+            <input
+              v-model="email"
+              :disabled="loading"
+              placeholder="Enter your email"
+              type="text"
+            />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
 
@@ -22,6 +27,7 @@
           >
             <input
               v-model="password"
+              :disabled="loading"
               placeholder="Enter password"
               type="password"
             />
@@ -43,7 +49,7 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from "vee-validate";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
@@ -54,34 +60,19 @@ export default {
     return {
       email: "",
       password: "",
-
-      loading: false,
     };
   },
+  computed: {
+    ...mapState("account/login", ["loading"]),
+  },
   methods: {
-    ...mapActions("auth", ["login"]),
-    ...mapMutations("notification", ["triggerToast"]),
-    onSubmit: async function () {
-      this.loading = true;
+    ...mapActions("account/login", ["login"]),
+    onSubmit: function () {
       const loginForm = {
         email: this.email,
         password: this.password,
       };
-      const isSuccess = await this.login(loginForm);
-      if (isSuccess) {
-        this.triggerToast({
-          status: "success",
-          message: "Login successfully.",
-        });
-        this.loading = false;
-        this.$router.push({ path: "/" });
-      } else {
-        this.triggerToast({
-          status: "danger",
-          message: "Email or password is not correct.",
-        });
-        this.loading = false;
-      }
+      this.login(loginForm);
     },
   },
 };
